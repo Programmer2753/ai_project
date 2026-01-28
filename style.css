@@ -15,6 +15,11 @@ body {
   padding: 10px;
 }
 
+.text-content {
+  white-space: pre-wrap; /* Сохраняет переносы строк от ИИ */
+  word-wrap: break-word;
+}
+
 #chat {
   height: 300px;
   overflow-y: auto;

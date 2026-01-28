@@ -22,7 +22,7 @@ sendBtn.onclick = async () => {
   addMessage(text, 'user');
   input.value = '';
 
-  const res = await fetch('/api/server', {
+  const res = await fetch('/api/ai_chat', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({

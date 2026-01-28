@@ -8,7 +8,7 @@ api_key = os.getenv("GEMINI_API_KEY")
 genai.configure(api_key=api_key)
 
 # Выбираем стабильную и умную модель из твоего списка
-MODEL_NAME = 'models/gemini-2.0-flash'
+MODEL_NAME = 'models/gemini-flash-latest'
 
 app = FastAPI()
 

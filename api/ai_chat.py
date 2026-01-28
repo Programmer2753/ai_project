@@ -7,9 +7,9 @@ import os
 api_key = os.getenv("GEMINI_API_KEY")
 genai.configure(api_key=api_key)
 
-# Указываем полный путь к модели. Для качества берем 1.5 Pro.
-# Если gemini-1.5-pro не сработает, попробуй gemini-1.5-pro-002 (самая стабильная)
-MODEL_NAME = 'models/gemini-1.5-pro' 
+# Указываем полный путь к модели. Для качества берем 2.5 Pro.
+# Если gemini-2.5-pro не сработает, попробуй gemini-2.5-pro-002 (самая стабильная)
+MODEL_NAME = 'models/gemini-2.5-pro' 
 
 app = FastAPI()
 

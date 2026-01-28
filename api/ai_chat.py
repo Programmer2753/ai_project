@@ -1,9 +1,10 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-import openai
+from openai import OpenAI  # Импортируем новый клиент
 import os
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# Инициализация клиента (автоматически берет ключ из переменных окружения)
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 app = FastAPI()
 
@@ -11,7 +12,8 @@ class AIRequest(BaseModel):
     message: str
     notes: list[str]
 
-@app.post("/api/ai-chat")
+# Исправили путь на ai_chat (как в JS)
+@app.post("/api/ai_chat")
 async def ai_chat(req: AIRequest):
     context = "Заметки пользователя:\n"
     for note in req.notes:
@@ -19,7 +21,8 @@ async def ai_chat(req: AIRequest):
 
     prompt = f"{context}\nВопрос: {req.message}\nОтветь кратко и по теме."
 
-    response = openai.ChatCompletion.create(
+    # Новый синтаксис OpenAI v1+
+    response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[{"role": "user", "content": prompt}]
     )

@@ -1,4 +1,11 @@
-/* Базовый сброс */
+/* --- Базовые настройки и переменные --- */
+:root {
+  /* Тот самый набор цветов: синий, фиолетовый, розовый, оранжевый */
+  /* Мы используем linear-gradient с повторением первого цвета в конце для бесшовности */
+  --main-gradient: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899, #f97316, #3b82f6);
+  --anim-speed: 4s; /* Единая скорость для синхронизации */
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -6,135 +13,173 @@
 }
 
 body {
-  font-family: 'Roboto', sans-serif; /* Можно подключить Google Fonts, если нужно */
-  background-color: #000000; /* Глубокий черный, как ты просил */
+  font-family: 'Roboto', sans-serif;
+  background-color: #1e1e1e;  
   color: #ececf1;
   height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-/* Основной контейнер растянут на весь экран */
 .chat {
   display: flex;
   flex-direction: column;
   height: 100%;
   width: 100%;
-  max-width: 100%; /* Убираем ограничение в 400px */
   background: transparent;
-  padding: 0;
-  border-radius: 0;
 }
 
-/* Область сообщений (скроллится) */
+/* Исправляем отступы в основном контейнере чата */
 #chat {
-  flex: 1; /* Занимает все место */
+  flex: 1;
   overflow-y: auto;
   padding: 20px;
   width: 100%;
-  /* Центрируем контент */
-  max-width: 768px; 
-  margin: 0 auto; 
+  max-width: 768px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 15px; /* Расстояние между сообщениями */
+  gap: 20px; /* Увеличиваем расстояние между парами сообщений */
 }
 
-/* Стили сообщений */
+/* --- Сообщения --- */
+
 .msg {
-  padding: 10px 15px;
-  border-radius: 18px;
-  max-width: 85%;
+  padding: 12px 20px; /* Больше отступов внутри для "воздушности" */
+  border-radius: 25px; /* Сильное скругление, как у инпута */
+  max-width: 80%; /* Чтобы текст не растягивался на весь экран */
   line-height: 1.5;
   font-size: 16px;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  color: #ffffff; /* Текст везде белый */
+  position: relative;
+  margin-bottom: 5px; /* Небольшой отступ между сообщениями в группе */
 }
 
 /* Сообщение юзера */
 .user {
-  align-self: flex-end;
-  text-align: left; /* Текст внутри сообщения лучше по левому краю */
-  background-color: #2f2f2f; /* Темно-серый, стильно на черном */
-  color: #fff;
-  border-bottom-right-radius: 4px;
+  align-self: flex-end; /* Прижимаем вправо */
+  background-color: #262626; /* Твой цвет: чуть светлее 1e1e1e */
+  border-bottom-right-radius: 8px; /* Небольшой "хвостик", чтобы отличить от АИ */
+  text-align: left;
 }
 
 /* Сообщение АИ */
 .ai {
-  align-self: flex-start;
+  align-self: flex-start; /* Прижимаем влево */
+  background-color: #262626; /* Тот же цвет для единства стиля */
+  border-bottom-left-radius: 8px; /* Хвостик в другую сторону */
   text-align: left;
-  /* Прозрачный фон или очень темный для АИ, можно добавить иконку позже */
-  color: #d1d5db; 
 }
 
-/* Сохранение переносов строк */
-.text-content {
-  white-space: pre-wrap;
-  word-wrap: break-word;
+/* Эффект при наведении на сообщение (опционально, для стиля) */
+.msg:hover {
+  filter: brightness(1.1);
+  transition: filter 0.2s ease;
 }
 
-/* --- Область ввода (Input Bar) --- */
+/* --- СИНХРОННАЯ АНИМАЦИЯ (ДВИЖЕНИЕ ГРАДИЕНТА) --- */
+@keyframes sync-flow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+/* 1. Обертка рамки (Твоя старая основа) */
+.animated-border-wrapper {
+  width: 100%;
+  max-width: 768px;
+  margin: 0 auto 30px auto;
+  border-radius: 35px;
+  padding: 5px; /* Толщина рамки */
+  
+  /* Применяем новый синхронный градиент */
+  background: var(--main-gradient);
+  background-size: 200% auto;
+  animation: sync-flow var(--anim-speed) linear infinite;
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 2. Поле ввода (Твоя старая основа) */
 .input {
   width: 100%;
-  max-width: 768px; /* Ширина как у чата */
-  margin: 0 auto 20px auto; /* Отступ снизу */
-  background-color: #1e1e1e; /* Чуть светлее фона, чтобы выделялось */
-  border-radius: 30px; /* Делаем капсулу */
+  background-color: #1e1e1e; 
+  border-radius: 30px;
   padding: 8px 10px 8px 20px;
   display: flex;
   align-items: center;
-  border: 1px solid #333; /* Тонкая рамка */
+  border: none;
 }
 
-input {
+/* 3. Текст внутри (Новый визуал + синхронизация) */
+#message {
   flex: 1;
   background: transparent;
   border: none;
-  color: white;
   font-size: 16px;
   outline: none;
   padding: 5px 0;
+  font-weight: 600;
+
+  /* Оживляем курсор: */
+  caret-color: #adadad; /* Сделаем его ярко-синим (из твоей палитры), чтобы он был заметен */
+
+  background-image: var(--main-gradient);
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: sync-flow var(--anim-speed) linear infinite;
 }
 
-input::placeholder {
-  color: #6b7280;
+#message::placeholder {
+  -webkit-text-fill-color: #4b5563; /* Цвет плейсхолдера */
+  font-weight: normal;
 }
 
-/* Кнопка с иконкой */
-button {
-  background: white; /* Белый фон кнопки, как у многих AI */
+/* 4. Кнопка "Отправить" (Смесь старой основы и нового ховера) */
+#send {
+  background-image: var(--main-gradient);
+  background-size: 200% auto;
+  animation: sync-flow var(--anim-speed) linear infinite;
+
   border: none;
   border-radius: 50%;
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  transition: opacity 0.2s;
   margin-left: 10px;
+  
+  /* Ховер-эффекты из новой версии */
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.4);
 }
 
-button:hover {
-  opacity: 0.8;
+/* Эффекты наведения на кнопку */
+#send:hover {
+  transform: scale(1.1); 
+  filter: brightness(1.2);
+  box-shadow: 0 0 20px rgba(236, 72, 153, 0.6);
 }
 
-/* Настраиваем саму иконку SVG */
-button svg {
-  width: 18px;
-  height: 18px;
-  stroke: black; /* Сама стрелка черная */
+#send:active {
+  transform: scale(0.95);
+}
+
+#send svg {
+  width: 20px;
+  height: 20px;
+  stroke: white;
   fill: none;
-  transform: translateX(-1px) translateY(1px); /* Чуть подровнять визуально */
 }
 
-/* Красивый скроллбар */
-#chat::-webkit-scrollbar {
-  width: 8px;
-}
-#chat::-webkit-scrollbar-track {
-  background: transparent;
-}
-#chat::-webkit-scrollbar-thumb {
-  background-color: #333;
-  border-radius: 4px;
-}
+/* Скроллбар */
+#chat::-webkit-scrollbar { width: 8px; }
+#chat::-webkit-scrollbar-track { background: transparent; }
+#chat::-webkit-scrollbar-thumb { background-color: #333; border-radius: 4px; }

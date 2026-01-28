@@ -1,13 +1,11 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-from openai import OpenAI # Groq использует тот же стандарт, что и OpenAI!
+import google.generativeai as genai
 import os
 
-# Подключаемся к Groq
-client = OpenAI(
-    base_url="https://api.groq.com/openai/v1", # Магия здесь
-    api_key=os.getenv("OPENAI_API_KEY") # Сюда вставь ключ от Groq в Vercel
-)
+# Настройка Gemini
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+model = genai.GenerativeModel('gemini-1.5-flash') # Или gemini-1.5-pro для супер-мозгов
 
 app = FastAPI()
 
@@ -18,10 +16,12 @@ class AIRequest(BaseModel):
 @app.post("/api/ai_chat")
 async def ai_chat(req: AIRequest):
     try:
-        response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile", # Мощная бесплатная модель
-            messages=[{"role": "user", "content": req.message}]
-        )
-        return {"answer": response.choices[0].message.content}
+        # Формируем контекст из заметок
+        context = "Заметки пользователя:\n" + "\n".join(req.notes)
+        full_prompt = f"{context}\n\nВопрос: {req.message}"
+        
+        response = model.generate_content(full_prompt)
+        
+        return {"answer": response.text}
     except Exception as e:
-        return {"answer": f"Ошибка: {str(e)}"}
+        return {"answer": f"Ошибка Gemini: {str(e)}"}

@@ -1,8 +1,7 @@
-import os
 from fastapi import FastAPI
 from pydantic import BaseModel
 import openai
-from mangum import Mangum
+import os
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
@@ -10,28 +9,21 @@ app = FastAPI()
 
 class AIRequest(BaseModel):
     message: str
-    notes: list
+    notes: list[str]
 
-@app.post("/")
+@app.post("/api/ai-chat")
 async def ai_chat(req: AIRequest):
-    context = "Вот заметки пользователя:\n"
+    context = "Заметки пользователя:\n"
     for note in req.notes:
         context += f"- {note}\n"
 
-    prompt = (
-        f"{context}\n"
-        f"Вопрос пользователя: {req.message}\n"
-        f"Ты ассистент сайта SelfNote. Отвечай ТОЛЬКО по заметкам, "
-        f"анализу задач, распорядку дня и продуктивности. "
-        f"Кратко, по делу."
-    )
+    prompt = f"{context}\nВопрос: {req.message}\nОтветь кратко и по теме."
 
     response = openai.ChatCompletion.create(
-        model="gpt-4",
+        model="gpt-4o-mini",
         messages=[{"role": "user", "content": prompt}]
     )
 
-    answer = response.choices[0].message.content
-    return {"answer": answer}
-
-handler = Mangum(app)
+    return {
+        "answer": response.choices[0].message.content
+    }

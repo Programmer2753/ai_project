@@ -1,4 +1,4 @@
 fastapi
+unicorn
 pydantic
 openai
-mangum

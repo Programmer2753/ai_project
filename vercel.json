@@ -1,7 +1,7 @@
 {
   "functions": {
     "api/main.py": {
-      "runtime": "python3.13"
+      "runtime": "python3.11"
     }
   }
 }

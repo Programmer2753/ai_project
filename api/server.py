@@ -13,7 +13,7 @@ class AIRequest(BaseModel):
     notes: list[str]
 
 # Исправили путь на ai_chat (как в JS)
-@app.post("/api/server")
+@app.post("/api/ai_chat")
 async def ai_chat(req: AIRequest):
     context = "Заметки пользователя:\n"
     for note in req.notes:

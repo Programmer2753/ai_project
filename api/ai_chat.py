@@ -3,9 +3,13 @@ from pydantic import BaseModel
 import google.generativeai as genai
 import os
 
-# Настройка Gemini
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-model = genai.GenerativeModel('gemini-1.5-flash') # Или gemini-1.5-pro для супер-мозгов
+# Настройка ключа
+api_key = os.getenv("GEMINI_API_KEY")
+genai.configure(api_key=api_key)
+
+# Выбираем модель Pro для высокого качества ответов
+# (Можно попробовать 'gemini-1.5-pro-latest' для самой свежей версии)
+model = genai.GenerativeModel('gemini-1.5-pro')
 
 app = FastAPI()
 
@@ -16,12 +20,14 @@ class AIRequest(BaseModel):
 @app.post("/api/ai_chat")
 async def ai_chat(req: AIRequest):
     try:
-        # Формируем контекст из заметок
-        context = "Заметки пользователя:\n" + "\n".join(req.notes)
-        full_prompt = f"{context}\n\nВопрос: {req.message}"
-        
+        # Формируем промпт так, чтобы ИИ использовал твои заметки
+        context = "Твои знания (заметки пользователя):\n" + "\n".join(req.notes)
+        full_prompt = f"{context}\n\nВопрос пользователя: {req.message}\nОтвечай вдумчиво и подробно."
+
         response = model.generate_content(full_prompt)
         
         return {"answer": response.text}
     except Exception as e:
-        return {"answer": f"Ошибка Gemini: {str(e)}"}
+        # Если Pro-модель вдруг выдаст 404 (зависит от региона/ключа), 
+        # здесь мы увидим конкретную причину.
+        return {"answer": f"Ошибка (модель Pro): {str(e)}"}

@@ -1,6 +1,9 @@
 {
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/ai_chat.py" }
+  ],
   "functions": {
-    "api/main.py": {
+    "api/ai_chat.py": {
       "runtime": "vercel-python@0.7.3"
     }
   }

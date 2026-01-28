@@ -4,11 +4,16 @@ const sendBtn = document.getElementById('send');
 
 function addMessage(text, cls) {
   const div = document.createElement('div');
-  div.className = `msg ${cls}`;
+  // ОШИБКА БЫЛА ЗДЕСЬ: div.className = msg ${cls};
+  // ИСПРАВЛЕНИЕ (добавили обратные кавычки ` `):
+  div.className = `msg ${cls}`; 
   div.textContent = text;
   chat.appendChild(div);
   chat.scrollTop = chat.scrollHeight;
 }
+
+// ... остальной код без изменений ...
+// Убедись, что fetch делает запрос именно на '/api/ai_chat', как мы исправили в Python.
 
 sendBtn.onclick = async () => {
   const text = input.value.trim();

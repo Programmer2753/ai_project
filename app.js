@@ -2,35 +2,60 @@ const chat = document.getElementById('chat');
 const input = document.getElementById('message');
 const sendBtn = document.getElementById('send');
 
-function addMessage(text, cls) {
-  const div = document.createElement('div');
-  // ОШИБКА БЫЛА ЗДЕСЬ: div.className = msg ${cls};
-  // ИСПРАВЛЕНИЕ (добавили обратные кавычки ` `):
-  div.className = `msg ${cls}`; 
-  div.textContent = text;
-  chat.appendChild(div);
-  chat.scrollTop = chat.scrollHeight;
+// Функция для эффекта печати
+function typeWriter(text, element, speed = 25) {
+    let i = 0;
+    element.innerHTML = ""; // Очищаем поле перед началом
+    
+    function type() {
+        if (i < text.length) {
+            element.innerHTML += text.charAt(i);
+            i++;
+            setTimeout(type, speed);
+            
+            // Автопрокрутка вниз, чтобы видеть новые буквы
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+    }
+    type();
 }
 
-// ... остальной код без изменений ...
-// Убедись, что fetch делает запрос именно на '/api/ai_chat', как мы исправили в Python.
-
+// Твой основной обработчик кнопки (примерная интеграция)
 sendBtn.onclick = async () => {
-  const text = input.value.trim();
-  if (!text) return;
+    const message = userInput.value;
+    if (!message) return;
 
-  addMessage(text, 'user');
-  input.value = '';
+    // 1. Добавляем сообщение пользователя в чат сразу
+    appendMessage("Вы", message);
+    userInput.value = "";
 
-  const res = await fetch('/api/ai_chat', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      message: text,
-      notes: []
-    })
-  });
+    // 2. Создаем пустой контейнер для ответа ИИ
+    const aiMessageElement = appendMessage("ИИ", "Печатает...");
 
-  const data = await res.json();
-  addMessage(data.answer, 'ai');
+    try {
+        const response = await fetch('/api/ai_chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: message, notes: myNotes })
+        });
+
+        const data = await response.json();
+        
+        // 3. Вместо простого вывода запускаем эффект печати
+        typeWriter(data.answer, aiMessageElement);
+
+    } catch (error) {
+        aiMessageElement.innerText = "Ошибка связи: " + error.message;
+    }
 };
+
+// Вспомогательная функция для добавления блоков сообщений
+function appendMessage(sender, text) {
+    const msgDiv = document.createElement("div");
+    msgDiv.className = sender === "Вы" ? "user-msg" : "ai-msg";
+    msgDiv.innerHTML = `<strong>${sender}:</strong> <span class="text-content">${text}</span>`;
+    chatBox.appendChild(msgDiv);
+    
+    // Возвращаем элемент, куда будем "печатать" текст
+    return msgDiv.querySelector(".text-content");
+}

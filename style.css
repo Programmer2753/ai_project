@@ -219,14 +219,14 @@ body {
 #send svg {
     width: 24px;
     height: 24px;
-    stroke: white; /* Делаем линии белыми */
+    stroke: white!important; /* Делаем линии белыми */
     fill: none;
 }
 
 /* Специально для квадратика (STOP), если он закрашен */
 #send svg rect {
-    fill: white; 
-    stroke: white;
+    fill: white!important; 
+    stroke: white!important;
 }
 
 /* Скроллбар */

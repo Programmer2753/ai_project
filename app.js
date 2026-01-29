@@ -82,9 +82,11 @@ function typeWriter(text, element, speed = 15) {
 
 function finalize() {
     isGenerating = false;
-    stopTypewriter = false; // Сбрасываем флаг
+    stopTypewriter = false;
     sendBtn.innerHTML = SEND_SVG;
-    sendBtn.style.backgroundColor = "#007bff"; // Возвращаем исходный цвет
+    sendBtn.disabled = false; // На всякий случай включаем кнопку обратно
+    // Убеждаемся, что цвет фона тоже вернулся
+    sendBtn.style.backgroundColor = "#007bff"; 
 }
 
 sendBtn.onclick = async () => {
@@ -131,7 +133,9 @@ sendBtn.onclick = async () => {
         } else {
             aiMessageElement.innerText = "Ошибка: " + error.message;
         }
-        finalize(); // В случае любой ошибки или отмены возвращаем кнопку
+
+    } finally {
+        finalize();
     }
 };
 

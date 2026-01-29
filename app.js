@@ -22,7 +22,7 @@ function typeWriter(text, element, speed = 25) {
 
 // Твой основной обработчик кнопки (примерная интеграция)
 sendBtn.onclick = async () => {
-    const message = userInput.value;
+    const message = input.value;
     if (!message) return;
 
     // 1. Добавляем сообщение пользователя в чат сразу

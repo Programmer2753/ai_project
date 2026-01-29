@@ -116,25 +116,26 @@ body {
 
 /* Обновляем стили для textarea */
 #message {
-  flex: 1;
-  background: transparent;
-  border: none;
-  font-size: 16px;
-  outline: none;
-  padding: 10px 0; /* Чуть больше отступа для удобства */
-  font-weight: 600;
-  caret-color: #3b82f6;
-  resize: none; /* Запрещаем юзеру тянуть за угол вручную */
-  max-height: 200px; /* Чтобы не ушла за пределы экрана */
-  overflow-y: hidden; /* Скрываем скролл, пока не дойдем до макс. высоты */
-  line-height: 1.4;
-    
-  background-image: var(--main-gradient);
-  background-size: 200% auto;
-  color: transparent;
-  -webkit-background-clip: text;
-  background-clip: text;
-  animation: sync-flow var(--anim-speed) linear infinite;
+    flex: 1;
+    background: transparent;
+    border: none;
+    font-size: 16px;
+    outline: none;
+    padding: 10px 0;
+    caret-color: #3b82f6;
+    resize: none; /* Запрещаем ручное изменение размера */
+    overflow-y: hidden; /* Скрываем скролл */
+    min-height: 24px;
+    max-height: 200px; /* Чтобы не улетело за экран при очень длинном тексте */
+    line-height: 1.4;
+
+    /* ТВОЙ ЛЮБИМЫЙ RGB ВИЗУАЛ */
+    background-image: var(--main-gradient);
+    background-size: 200% auto;
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: sync-flow var(--anim-speed) linear infinite;
 }
 
 /* Стили, чтобы математика и списки внутри сообщений выглядели красиво */
@@ -144,9 +145,52 @@ body {
 
 #message::placeholder {
   -webkit-text-fill-color: #4b5563; /* Цвет плейсхолдера */
-  font-weight: normal;
+  font-weight: 0;
 }
 
+/* 4. Кнопка "Отправить" (Смесь старой основы и нового ховера) */
+#send {
+  background-image: var(--main-gradient);
+  background-size: 200% auto;
+  animation: sync-flow var(--anim-speed) linear infinite;
+
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  margin-left: 10px;
+  
+  /* Ховер-эффекты из новой версии */
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.4);
+}
+
+/* Эффекты наведения на кнопку */
+#send:hover {
+  transform: scale(1.1); 
+  filter: brightness(1.2);
+  box-shadow: 0 0 20px rgba(236, 72, 153, 0.6);
+}
+
+#send:active {
+  transform: scale(0.95);
+}
+
+#send svg {
+  width: 20px;
+  height: 20px;
+  stroke: white;
+  fill: none;
+}
+
+/* Скроллбар */
+#chat::-webkit-scrollbar { width: 8px; }
+#chat::-webkit-scrollbar-track { background: transparent; }
+#chat::-webkit-scrollbar-thumb { background-color: #333; border-radius: 4px; }
 /* 4. Кнопка "Отправить" (Смесь старой основы и нового ховера) */
 #send {
   background-image: var(--main-gradient);

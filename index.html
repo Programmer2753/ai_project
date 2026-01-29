@@ -6,6 +6,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
   <title>SelfNote AI</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -17,7 +18,7 @@
 
     <div class="animated-border-wrapper">
         <div class="input">
-          <input id="message" placeholder="Введите запрос..." autocomplete="off" />
+          <textarea id="message" placeholder="Введите запрос..." autocomplete="off" rows="1"></textarea>
           <button id="send">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M22 2L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>

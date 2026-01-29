@@ -10,17 +10,27 @@ let stopTypewriter = false;
 // Иконки
 const SEND_SVG = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 2L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const STOP_SVG = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="6" width="12" height="12" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>`;
-
-// Функция умного скролла
+const chatContainer = document.querySelector('.chat');
+// Исправленный умный скролл
 function smartScroll() {
-    const threshold = 150; // Пиксели до низа
-    const isAtBottom = chat.scrollHeight - chat.scrollTop - chat.clientHeight < threshold;
-    if (isAtBottom) {
-        chat.scrollTop = chat.scrollHeight;
+    const threshold = 100; // Чувствительность
+    // Если разница между высотой контента и текущим скроллом невелика — скроллим
+    const distanceToBottom = chat.scrollHeight - chat.scrollTop - chat.clientHeight;
+    
+    if (distanceToBottom < threshold) {
+        chat.scrollTo({
+            top: chat.scrollHeight,
+            behavior: 'instant' // Для печати лучше instant, чтобы не дергалось
+        });
     }
 }
 
 function appendMessage(role, text) {
+    // Если это самое первое сообщение в сессии
+    if (chatContainer.classList.contains('is-empty')) {
+        chatContainer.classList.remove('is-empty');
+    }
+
     const msgDiv = document.createElement("div");
     msgDiv.className = `msg ${role}`;
     const contentSpan = document.createElement("span");
@@ -29,7 +39,11 @@ function appendMessage(role, text) {
     msgDiv.appendChild(contentSpan);
     chat.appendChild(msgDiv);
     
-    smartScroll(); // Используем умный скролл
+    // Скроллим только после того, как DOM обновился
+    setTimeout(() => {
+        chat.scrollTop = chat.scrollHeight;
+    }, 10);
+    
     return contentSpan;
 }
 
@@ -49,7 +63,8 @@ function typeWriter(text, element, speed = 15) {
             currentText += text.charAt(i);
             element.innerText = currentText; 
             i++;
-            smartScroll();
+            smartScroll(); 
+            
             setTimeout(type, speed);
         } else {
             renderContent(element, currentText);

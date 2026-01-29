@@ -234,3 +234,102 @@ body {
 #chat::-webkit-scrollbar { width: 8px; }
 #chat::-webkit-scrollbar-track { background: transparent; }
 #chat::-webkit-scrollbar-thumb { background-color: #333; border-radius: 4px; }
+
+/* --- СТИЛЬ ЛОГО И ЗАГОЛОВКА --- */
+
+#intro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    
+    flex: 0 0 auto; 
+    margin-bottom: 40px; /* Отступ до инпута */
+    
+    /* Исходное состояние (на случай если анимация не сработает) */
+    opacity: 1; 
+    transform: translateY(0);
+}
+
+.logo-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    /* Убрали margin-bottom отсюда, так как перенесли его в #intro для чистоты */
+    margin-bottom: 0; 
+}
+
+.main-logo {
+    height: 3.5rem; 
+    width: auto;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.2));
+}
+
+#intro h1 {
+    font-size: 3.5rem; 
+    font-weight: 700;
+    margin: 0;
+    background: linear-gradient(180deg, #FFFFFF 0%, #999999 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* --- ЛОГИКА ПЕРЕХОДОВ И ПОЗИЦИИ --- */
+
+.chat.is-empty {
+    /* Центруем группу (Лого + Инпут) строго по центру экрана */
+    justify-content: center; 
+}
+
+.chat.is-empty #intro {
+    /* Название анимации | длительность | плавность | задержка (опц) | фиксация в конце */
+    animation: fadeInUp 1s cubic-bezier(0.3, 1, 0.5, 1) forwards;
+}
+
+/* Скрываем сообщения, пока чат пуст */
+.chat.is-empty #chat {
+    display: none;
+}
+
+/* Инпут в пустом состоянии */
+.chat.is-empty .animated-border-wrapper {
+    /* УБРАЛИ 25vh. Теперь отступ регулируется только через margin-bottom у #intro */
+    margin-bottom: 0; 
+}
+
+/* --- КОГДА ЧАТ НАЧАЛСЯ (АНИМАЦИЯ ИСЧЕЗНОВЕНИЯ) --- */
+
+.chat:not(.is-empty) {
+    justify-content: flex-end;
+}
+
+.chat:not(.is-empty) #intro {
+    flex: 0; 
+    margin: 0;
+    height: 0; /* Схлопываем высоту */
+    opacity: 0;
+    transform: translateY(-50px) scale(0.9); /* Логотип улетает вверх */
+    pointer-events: none;
+}
+
+/* Возвращаем нормальный отступ инпуту в режиме переписки */
+.chat:not(.is-empty) .animated-border-wrapper {
+    margin-bottom: 30px; 
+}
+
+/* Плавная анимация обертки */
+.animated-border-wrapper {
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(-30px); /* Начинаем чуть ниже и меньше */
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0); /* Встаем на место */
+    }
+}

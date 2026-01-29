@@ -47,27 +47,31 @@ function appendMessage(role, text) {
     return contentSpan;
 }
 
+let typingTimeoutId = null; // Храним ID таймера, чтобы убить его жестко
+
 function typeWriter(text, element, speed = 15) {
     let i = 0;
-    let currentText = "";
-    stopTypewriter = false;
+    element.innerHTML = ""; // Гарантированная очистка
+    
+    // Если была предыдущая печать — убиваем её насмерть
+    if (typingTimeoutId) clearTimeout(typingTimeoutId);
 
     function type() {
+        // Если вдруг мы решили остановить печать извне
         if (stopTypewriter) {
-            renderContent(element, currentText + " [Остановлено]");
+            element.innerHTML += " [Остановлено]";
             finalize();
             return;
         }
 
         if (i < text.length) {
-            currentText += text.charAt(i);
-            element.innerText = currentText; 
+            element.innerHTML += text.charAt(i); // Используем innerHTML для корректной работы
             i++;
-            smartScroll(); 
-            
-            setTimeout(type, speed);
+            smartScroll();
+            // Сохраняем ID таймера
+            typingTimeoutId = setTimeout(type, speed);
         } else {
-            renderContent(element, currentText);
+            renderContent(element, text); // Рендерим Markdown в конце
             finalize();
         }
     }
@@ -82,9 +86,13 @@ function finalize() {
 sendBtn.onclick = async () => {
     if (isGenerating) {
         if (controller) controller.abort();
-        stopTypewriter = true;
+        stopTypewriter = true; 
+        if (typingTimeoutId) clearTimeout(typingTimeoutId); // Мгновенная остановка букв
         return;
     }
+    
+    // Сброс флага для НОВОГО сообщения
+    stopTypewriter = false;
 
     const userText = input.value.trim();
     if (!userText) return;

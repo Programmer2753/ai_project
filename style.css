@@ -193,41 +193,40 @@ body {
 #chat::-webkit-scrollbar-thumb { background-color: #333; border-radius: 4px; }
 /* 4. Кнопка "Отправить" (Смесь старой основы и нового ховера) */
 #send {
-  background-image: var(--main-gradient);
-  background-size: 200% auto;
-  animation: sync-flow var(--anim-speed) linear infinite;
-
-  border: none;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  margin-left: 10px;
-  
-  /* Ховер-эффекты из новой версии */
-  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
-  box-shadow: 0 0 10px rgba(139, 92, 246, 0.4);
+    background-color: #007bff; /* Синий цвет кнопки (можешь поменять на свой) */
+    border: none;
+    border-radius: 50%; /* Круглая кнопка */
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+    padding: 10px;
 }
 
-/* Эффекты наведения на кнопку */
 #send:hover {
-  transform: scale(1.1); 
-  filter: brightness(1.2);
-  box-shadow: 0 0 20px rgba(236, 72, 153, 0.6);
+    background-color: #0056b3;
+    transform: scale(1.05);
 }
 
 #send:active {
-  transform: scale(0.95);
+    transform: scale(0.95);
 }
 
+/* Цвет иконок внутри */
 #send svg {
-  width: 20px;
-  height: 20px;
-  stroke: white;
-  fill: none;
+    width: 24px;
+    height: 24px;
+    stroke: white; /* Делаем линии белыми */
+    fill: none;
+}
+
+/* Специально для квадратика (STOP), если он закрашен */
+#send svg rect {
+    fill: white; 
+    stroke: white;
 }
 
 /* Скроллбар */

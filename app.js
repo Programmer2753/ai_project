@@ -8,8 +8,8 @@ let controller; // Для отмены запроса
 let stopTypewriter = false;
 
 // Иконки
-const SEND_SVG = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 2L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-const STOP_SVG = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="6" width="12" height="12" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>`;
+const SEND_SVG = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 2L11 13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const STOP_SVG = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="6" width="12" height="12" fill="white" stroke="white" stroke-width="2" stroke-linejoin="round"/></svg>`;
 const chatContainer = document.querySelector('.chat');
 // Исправленный умный скролл
 function smartScroll() {
@@ -78,32 +78,33 @@ function typeWriter(text, element, speed = 15) {
     type();
 }
 
+// ... (функции smartScroll и appendMessage остаются без изменений) ...
+
 function finalize() {
     isGenerating = false;
+    stopTypewriter = false; // Сбрасываем флаг
     sendBtn.innerHTML = SEND_SVG;
+    sendBtn.style.backgroundColor = "#007bff"; // Возвращаем исходный цвет
 }
 
 sendBtn.onclick = async () => {
     if (isGenerating) {
         if (controller) controller.abort();
-        stopTypewriter = true; 
-        if (typingTimeoutId) clearTimeout(typingTimeoutId); // Мгновенная остановка букв
+        stopTypewriter = true;
+        finalize(); // МГНОВЕННО возвращаем кнопку в рабочее состояние
         return;
     }
-    
-    // Сброс флага для НОВОГО сообщения
-    stopTypewriter = false;
 
     const userText = input.value.trim();
     if (!userText) return;
 
     isGenerating = true;
     sendBtn.innerHTML = STOP_SVG;
+    sendBtn.style.backgroundColor = "#ff4d4d"; // Красный цвет во время генерации
+    
     controller = new AbortController();
-
     appendMessage("user", userText);
-    input.value = ""; 
-    input.style.height = 'auto';
+    input.value = "";
     
     const aiMessageElement = appendMessage("ai", "Печатает...");
 
@@ -111,7 +112,6 @@ sendBtn.onclick = async () => {
         const response = await fetch('/api/ai_chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            // ВОЗВРАЩАЕМ notes, чтобы не было ошибки 422
             body: JSON.stringify({ message: userText, notes: myNotes }),
             signal: controller.signal
         });
@@ -119,15 +119,19 @@ sendBtn.onclick = async () => {
         if (!response.ok) throw new Error("Ошибка сервера");
 
         const data = await response.json();
-        typeWriter(data.answer, aiMessageElement);
+        
+        // Если пока сервер отвечал, мы не нажали "Стоп"
+        if (!stopTypewriter) {
+            typeWriter(data.answer, aiMessageElement);
+        }
 
     } catch (error) {
         if (error.name === 'AbortError') {
-            console.log("Отменено");
+            aiMessageElement.innerText = "Генерация остановлена.";
         } else {
             aiMessageElement.innerText = "Ошибка: " + error.message;
-            finalize();
         }
+        finalize(); // В случае любой ошибки или отмены возвращаем кнопку
     }
 };
 

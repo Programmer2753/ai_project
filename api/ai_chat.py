@@ -8,9 +8,14 @@ api_key = os.getenv("GEMINI_API_KEY")
 genai.configure(api_key=api_key)
 
 # Выбираем стабильную и умную модель из твоего списка
-MODEL_NAME = 'models/gemini-flash-3'
+MODEL_NAME = 'models/gemini-flash-latest'
 
 app = FastAPI()
+
+model = genai.GenerativeModel(
+    model_name=MODEL_NAME,
+    system_instruction="Ты — продвинутый ИИ-помощник. Твоя задача — анализировать заметки пользователя и давать максимально глубокие, логичные и аргументированные ответы. Перед тем как ответить, проанализируй контекст."
+)
 
 class AIRequest(BaseModel):
     message: str
@@ -20,11 +25,6 @@ class AIRequest(BaseModel):
 async def ai_chat(req: AIRequest):
     try:
         # Настраиваем "мозги" модели через системную инструкцию
-        model = genai.GenerativeModel(
-            model_name=MODEL_NAME,
-            system_instruction="Ты — продвинутый ИИ-помощник. Твоя задача — анализировать заметки пользователя и давать максимально глубокие, логичные и аргументированные ответы. Перед тем как ответить, проанализируй контекст."
-        )
-        
         # Контекст из заметок
         context = "ЗАМЕТКИ ПОЛЬЗОВАТЕЛЯ ДЛЯ АНАЛИЗА:\n" + "\n".join(req.notes)
         user_prompt = f"{context}\n\nВОПРОС: {req.message}"

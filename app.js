@@ -5,24 +5,6 @@ const sendBtn = document.getElementById('send');
 // Если у тебя есть система заметок, добавь их сюда, иначе оставляем пустой массив
 let myNotes = []; 
 
-// Функция для эффекта печати
-function typeWriter(text, element, speed = 25) {
-    let i = 0;
-    element.innerHTML = ""; // Очищаем поле "Печатает..."
-    
-    function type() {
-        if (i < text.length) {
-            element.innerHTML += text.charAt(i);
-            i++;
-            setTimeout(type, speed);
-            
-            // Прокрутка вниз к последнему символу
-            chat.scrollTop = chat.scrollHeight;
-        }
-    }
-    type();
-}
-
 // Обработчик кнопки
 sendBtn.onclick = async () => {
     const userText = input.value.trim(); // Берем текст из инпута
@@ -55,24 +37,55 @@ sendBtn.onclick = async () => {
     }
 };
 
-// Вспомогательная функция для добавления блоков
+// 1. Автоматическое расширение textarea
+input.addEventListener('input', function() {
+    this.style.height = 'auto'; // Сбрасываем высоту
+    this.style.height = (this.scrollHeight) + 'px'; // Ставим высоту по контенту
+});
+
+// 2. Улучшенная функция appendMessage для поддержки Markdown
 function appendMessage(role, text) {
     const msgDiv = document.createElement("div");
-    
-    // Присваиваем классы 'msg' и либо 'user', либо 'ai' (как в нашем CSS)
     msgDiv.className = `msg ${role}`;
     
-    // Создаем внутренний контейнер для текста
-    msgDiv.innerHTML = `<span class="text-content">${text}</span>`;
+    // Создаем контейнер для контента
+    const contentSpan = document.createElement("span");
+    contentSpan.className = "text-content";
     
-    // Добавляем в основной контейнер чата
+    // Если это АИ, мы будем рендерить Markdown (позже)
+    // А пока просто вставляем текст
+    contentSpan.innerText = text;
+    
+    msgDiv.appendChild(contentSpan);
     chat.appendChild(msgDiv);
-    
-    // Автопрокрутка к новому сообщению
     chat.scrollTop = chat.scrollHeight;
     
-    // Возвращаем элемент, куда будем "печатать"
-    return msgDiv.querySelector(".text-content");
+    return contentSpan;
+}
+
+// 3. Обновляем typeWriter, чтобы она понимала разметку после печати
+function typeWriter(text, element, speed = 15) {
+    let i = 0;
+    let currentText = "";
+    
+    function type() {
+        if (i < text.length) {
+            currentText += text.charAt(i);
+            // Пока печатаем — выводим как текст, чтобы было быстро
+            element.innerText = currentText; 
+            i++;
+            setTimeout(type, speed);
+            chat.scrollTop = chat.scrollHeight;
+        } else {
+            // КОГДА ЗАКОНЧИЛ ПЕЧАТАТЬ: превращаем текст в красивый Markdown
+            // Используем библиотеку marked для рендеринга
+            element.innerHTML = marked.parse(currentText);
+            
+            // Если там есть формулы (опционально можно добавить рендер KaTeX здесь)
+            // Но даже просто Markdown сделает жирный текст и заголовки человечными.
+        }
+    }
+    type();
 }
 
 // Обработка нажатия Enter

@@ -2,10 +2,13 @@ const chat = document.getElementById('chat');
 const input = document.getElementById('message');
 const sendBtn = document.getElementById('send');
 
+// Если у тебя есть система заметок, добавь их сюда, иначе оставляем пустой массив
+let myNotes = []; 
+
 // Функция для эффекта печати
 function typeWriter(text, element, speed = 25) {
     let i = 0;
-    element.innerHTML = ""; // Очищаем поле перед началом
+    element.innerHTML = ""; // Очищаем поле "Печатает..."
     
     function type() {
         if (i < text.length) {
@@ -13,35 +16,38 @@ function typeWriter(text, element, speed = 25) {
             i++;
             setTimeout(type, speed);
             
-            // Автопрокрутка вниз, чтобы видеть новые буквы
-            window.scrollTo(0, document.body.scrollHeight);
+            // Прокрутка вниз к последнему символу
+            chat.scrollTop = chat.scrollHeight;
         }
     }
     type();
 }
 
-// Твой основной обработчик кнопки (примерная интеграция)
+// Обработчик кнопки
 sendBtn.onclick = async () => {
-    const message = input.value;
-    if (!message) return;
+    const userText = input.value.trim(); // Берем текст из инпута
+    if (!userText) return;
 
-    // 1. Добавляем сообщение пользователя в чат сразу
-    appendMessage("Вы", message);
-    userInput.value = "";
+    // 1. Добавляем сообщение пользователя
+    appendMessage("user", userText);
+    input.value = ""; // Очищаем поле ввода
 
     // 2. Создаем пустой контейнер для ответа ИИ
-    const aiMessageElement = appendMessage("ИИ", "Печатает...");
+    const aiMessageElement = appendMessage("ai", "Печатает...");
 
     try {
         const response = await fetch('/api/ai_chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: message, notes: myNotes })
+            // Отправляем текст и наши заметки
+            body: JSON.stringify({ message: userText, notes: myNotes })
         });
+
+        if (!response.ok) throw new Error("Ошибка сервера");
 
         const data = await response.json();
         
-        // 3. Вместо простого вывода запускаем эффект печати
+        // 3. Запускаем эффект печати для ответа
         typeWriter(data.answer, aiMessageElement);
 
     } catch (error) {
@@ -49,13 +55,31 @@ sendBtn.onclick = async () => {
     }
 };
 
-// Вспомогательная функция для добавления блоков сообщений
-function appendMessage(sender, text) {
+// Вспомогательная функция для добавления блоков
+function appendMessage(role, text) {
     const msgDiv = document.createElement("div");
-    msgDiv.className = sender === "Вы" ? "user-msg" : "ai-msg";
-    msgDiv.innerHTML = `<strong>${sender}:</strong> <span class="text-content">${text}</span>`;
-    chatBox.appendChild(msgDiv);
     
-    // Возвращаем элемент, куда будем "печатать" текст
+    // Присваиваем классы 'msg' и либо 'user', либо 'ai' (как в нашем CSS)
+    msgDiv.className = `msg ${role}`;
+    
+    // Создаем внутренний контейнер для текста
+    msgDiv.innerHTML = `<span class="text-content">${text}</span>`;
+    
+    // Добавляем в основной контейнер чата
+    chat.appendChild(msgDiv);
+    
+    // Автопрокрутка к новому сообщению
+    chat.scrollTop = chat.scrollHeight;
+    
+    // Возвращаем элемент, куда будем "печатать"
     return msgDiv.querySelector(".text-content");
 }
+
+// Обработка нажатия Enter
+input.addEventListener('keydown', (event) => {
+    // Проверяем, что нажат именно Enter и НЕ нажат Shift
+    if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault(); // Чтобы не было лишнего переноса строки в пустом поле
+        sendBtn.click(); // Просто имитируем клик по кнопке "Отправить"
+    }
+});

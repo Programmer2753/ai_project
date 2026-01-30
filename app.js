@@ -125,7 +125,9 @@ sendBtn.onclick = async () => {
         
         // Если пока сервер отвечал, мы не нажали "Стоп"
         if (!stopTypewriter) {
-            typeWriter(data.answer, aiMessageElement);
+            const data = await response.json();
+            const cleanAnswer = data.answer.trim();
+            typeWriter(cleanAnswer, aiMessageElement);
         }
 
     } catch (error) {

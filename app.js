@@ -107,6 +107,7 @@ sendBtn.onclick = async () => {
     controller = new AbortController();
     appendMessage("user", userText);
     input.value = "";
+    input.style.height = 'auto';
     
     const aiMessageElement = appendMessage("ai", "Печатает...");
 

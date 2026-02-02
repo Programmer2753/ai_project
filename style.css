@@ -128,8 +128,6 @@ body {
     outline: none;
     padding: 10px 0;
     caret-color: #3b82f6;
-    resize: none; /* Запрещаем ручное изменение размера */
-    overflow-y: hidden; /* Скрываем скролл */
     min-height: 24px;
     max-height: 200px; /* Чтобы не улетело за экран при очень длинном тексте */
     line-height: 1.4;
@@ -141,6 +139,8 @@ body {
     -webkit-background-clip: text;
     background-clip: text;
     animation: sync-flow var(--anim-speed) linear infinite;
+    overflow-y: auto;
+    resize: none;
 }
 
 /* Стили, чтобы математика и списки внутри сообщений выглядели красиво */

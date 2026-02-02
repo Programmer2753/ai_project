@@ -11,6 +11,9 @@ let stopTypewriter = false;
 const SEND_SVG = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 2L11 13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const STOP_SVG = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="6" width="12" height="12" fill="white" stroke="white" stroke-width="2" stroke-linejoin="round"/></svg>`;
 const chatContainer = document.querySelector('.chat');
+
+let chatHistory = [];
+
 // Исправленный умный скролл
 function smartScroll() {
     const threshold = 100; // Чувствительность
@@ -98,6 +101,12 @@ sendBtn.onclick = async () => {
     }
 
     const userText = input.value.trim();
+
+    chatHistory.push({ role: "user", content: userText });
+
+    // Ограничиваем историю (например, последние 10 сообщений), чтобы не перегружать ИИ
+    if (chatHistory.length > 10) chatHistory.shift();
+
     if (!userText) return;
 
     isGenerating = true;
@@ -115,7 +124,7 @@ sendBtn.onclick = async () => {
         const response = await fetch('/api/ai_chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: userText, notes: myNotes }),
+            body: JSON.stringify({ message: userText, notes: myNotes, history: chatHistory }),
             signal: controller.signal
         });
 
@@ -125,6 +134,7 @@ sendBtn.onclick = async () => {
         
         // Если пока сервер отвечал, мы не нажали "Стоп"
         if (!stopTypewriter) {
+            chatHistory.push({ role: "model", content: data.answer });
             typeWriter(data.answer, aiMessageElement);
         }
 
@@ -145,6 +155,8 @@ sendBtn.onclick = async () => {
 input.addEventListener('input', function() {
     this.style.height = 'auto';
     this.style.height = (this.scrollHeight) + 'px';
+
+    window.scrollTo(0, document.body.scrollHeight);
 });
 
 input.addEventListener('keydown', (event) => {

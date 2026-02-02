@@ -17,6 +17,7 @@ model = genai.GenerativeModel(model_name=MODEL_NAME)
 class AIRequest(BaseModel):
     message: str
     notes: list[str]
+    history: list[dict]
 
 @app.post("/api/ai_chat")
 async def ai_chat(req: AIRequest):
@@ -37,9 +38,14 @@ async def ai_chat(req: AIRequest):
             "5. ИНТУИЦИЯ: Игнорируй опечатки и понимай перевернутые слова (тевирп -> привет) мгновенно. Не трать время на уточнение очевидного, просто отвечай на суть вопроса."
         )
 
+        history_text = ""
+        for msg in req.history[:-1]: # Берем всё, кроме последнего (оно и так в message)
+            role = "Пользователь" if msg['role'] == "user" else "Ты (SelfNote)"
+            history_text += f"{role}: {msg['content']}\n"
+
         # В full_prompt добавим еще один акцент для модели
         context = "ЗАМЕТКИ ПОЛЬЗОВАТЕЛЯ:\n" + "\n".join(req.notes)
-        user_prompt = f"### СИСТЕМНАЯ УСТАНОВКА:\n{system_rules}\n\n### КОНТЕКСТ:\n{context}\n\n### СООБЩЕНИЕ ПОЛЬЗОВАТЕЛЯ:\n{req.message}\n\nТВОЙ АДАПТИВНЫЙ ОТВЕТ:"
+        user_prompt = f"### СИСТЕМНАЯ УСТАНОВКА:\n{system_rules}\n\n### КОНТЕКСТ:\n{context}\n\n### ПРЕДЫДУЩИЕ СООБЩЕНИЯ:\n{history_text}\n\n### СООБЩЕНИЕ ПОЛЬЗОВАТЕЛЯ:\n{req.message}\n\nТВОЙ АДАПТИВНЫЙ ОТВЕТ:"
 
         response = model.generate_content(user_prompt)
         

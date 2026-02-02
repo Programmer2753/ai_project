@@ -154,9 +154,13 @@ sendBtn.onclick = async () => {
 
 input.addEventListener('input', function() {
     this.style.height = 'auto';
-    this.style.height = (this.scrollHeight) + 'px';
+    const newHeight = Math.min(this.scrollHeight, 150);
+    this.style.height = newHeight + 'px';
 
-    window.scrollTo(0, document.body.scrollHeight);
+    window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: 'smooth'
+    });
 });
 
 input.addEventListener('keydown', (event) => {

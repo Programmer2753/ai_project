@@ -73,6 +73,11 @@ body {
   text-align: left;
 }
 
+.ai-msg {
+  display: flex;
+  flex-direction: column;
+}
+
 /* Эффект при наведении на сообщение (опционально, для стиля) */
 .msg:hover {
   filter: brightness(1.1);
@@ -141,7 +146,11 @@ body {
 /* Стили, чтобы математика и списки внутри сообщений выглядели красиво */
 .text-content h2 { margin: 10px 0; font-size: 1.2em; color: #3b82f6; }
 .text-content ul { margin-left: 20px; }
-.text-content p { margin-bottom: 8px; }
+.text-content p { margin-bottom: 0.5em; }
+
+.text-content p:last-child {
+  margin-bottom: 0 !important; /* У последнего абзаца отступа быть не должно */
+}
 
 #message::placeholder {
   -webkit-text-fill-color: #4b5563; /* Цвет плейсхолдера */
@@ -185,6 +194,10 @@ body {
   height: 20px;
   stroke: white;
   fill: none;
+}
+
+.text-content p:last-child {
+  margin-bottom: 0 !important;
 }
 
 /* Скроллбар */

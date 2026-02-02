@@ -110,19 +110,13 @@ body {
 
 /* 2. Поле ввода (Твоя старая основа) */
 .input {
-    width: 100%;
-    background-color: #1e1e1e; 
-    border-radius: 20px; /* Немного уменьшил для красоты при расширении */
-    padding: 8px 15px;
-    display: flex;
-    align-items: flex-end; /* Кнопка будет прижата к низу при росте инпута */
-    border: 1px solid #333;
-    transition: border-color 0.3s;
-}
-
-.input:focus-within {
-    border-color: #3b82f6;
-    box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
+  width: 100%;
+  background-color: #1e1e1e; 
+  border-radius: 30px;
+  padding: 8px 10px 8px 20px;
+  display: flex;
+  align-items: center;
+  border: none;
 }
 
 /* Обновляем стили для textarea */
@@ -133,21 +127,20 @@ body {
     font-size: 16px;
     outline: none;
     padding: 10px 0;
-    color: #ffffff; /* ТЕКСТ ТЕПЕРЬ ВСЕГДА ВИДЕН */
     caret-color: #3b82f6;
     min-height: 24px;
-    max-height: 150px; 
-    line-height: 1.5;
+    max-height: 200px; /* Чтобы не улетело за экран при очень длинном тексте */
+    line-height: 1.4;
+
+    /* ТВОЙ ЛЮБИМЫЙ RGB ВИЗУАЛ */
+    background-image: var(--main-gradient);
+    background-size: 200% auto;
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: sync-flow var(--anim-speed) linear infinite;
     overflow-y: auto;
     resize: none;
-    font-family: inherit;
-}
-
-/* Убираем старый RGB визуал с текста, так как он ломает скролл */
-#message {
-    -webkit-background-clip: initial;
-    background-clip: initial;
-    background-image: none;
 }
 
 /* Стили, чтобы математика и списки внутри сообщений выглядели красиво */

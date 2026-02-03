@@ -78,12 +78,6 @@ body {
   flex-direction: column;
 }
 
-/* Эффект при наведении на сообщение (опционально, для стиля) */
-.msg:hover {
-  filter: brightness(0.6);
-  transition: filter 0.3s ease;
-}
-
 /* --- СИНХРОННАЯ АНИМАЦИЯ (ДВИЖЕНИЕ ГРАДИЕНТА) --- */
 @keyframes sync-flow {
   0% { background-position: 0% 50%; }
@@ -371,4 +365,42 @@ body {
         opacity: 1;
         transform: translateY(0); /* Встаем на место */
     }
+}
+
+
+/* Контейнер для анимации */
+.typing-indicator {
+    display: flex;
+    gap: 5px;
+    padding: 10px;
+    align-items: center;
+}
+
+/* Сами точки */
+.typing-indicator span {
+    width: 8px;
+    height: 8px;
+    background: var(--main-gradient);
+    background-size: 200% auto;
+    border-radius: 50%;
+    display: inline-block;
+    animation: typing-bounce 1.4s infinite ease-in-out both, 
+               sync-flow var(--anim-speed) linear infinite;
+}
+
+/* Задержка для каждой точки, чтобы они прыгали по очереди */
+.typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+.typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes typing-bounce {
+    0%, 80%, 100% { transform: scale(0); opacity: 0.3; }
+    40% { transform: scale(1); opacity: 1; }
+}
+
+/* Стиль текста статуса (опционально) */
+.thinking-text {
+    font-size: 0.9em;
+    color: #4b5563;
+    margin-left: 10px;
+    font-style: italic;
 }

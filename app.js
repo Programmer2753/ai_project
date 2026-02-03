@@ -96,35 +96,57 @@ sendBtn.onclick = async () => {
     if (isGenerating) {
         if (controller) controller.abort();
         stopTypewriter = true;
-        finalize(); // МГНОВЕННО возвращаем кнопку в рабочее состояние
+        finalize(); 
         return;
     }
 
     const userText = input.value.trim();
+    if (!userText) return; // Сначала проверяем на пустоту, потом работаем
 
+    // 1. Управление историей
     chatHistory.push({ role: "user", content: userText });
-
-    // Ограничиваем историю (например, последние 10 сообщений), чтобы не перегружать ИИ
     if (chatHistory.length > 10) chatHistory.shift();
 
-    if (!userText) return;
-
+    // 2. Визуал кнопки и сброс инпута
     isGenerating = true;
     sendBtn.innerHTML = STOP_SVG;
-    sendBtn.style.backgroundColor = "#ff4d4d"; // Красный цвет во время генерации
+    sendBtn.style.backgroundColor = "#ff4d4d"; 
     
     controller = new AbortController();
     appendMessage("user", userText);
     input.value = "";
-    input.style.height = 'auto';
+    input.style.height = '45px'; // Сброс к твоей базовой высоте
     
-    const aiMessageElement = appendMessage("ai", "Печатает...");
+    // 3. Создаем контейнер ИИ с анимацией
+    const aiMessageElement = appendMessage("ai", `
+        <div class="typing-indicator" id="current-loader">
+            <span></span><span></span><span></span>
+            <span class="thinking-text" id="thinking-status">SelfNote думает...</span>
+        </div>
+    `);
+
+    // 4. Логика смены статусов (интервал)
+    let statusInterval; 
+    const statuses = ["Анализирую заметки...", "Ищу логические связи...", "Формулирую ответ..."];
+    let statusIdx = 0;
+
+    statusInterval = setInterval(() => {
+        const statusEl = document.getElementById('thinking-status');
+        if (statusEl) {
+            statusEl.innerText = statuses[statusIdx % statuses.length];
+            statusIdx++;
+        }
+    }, 2000);
 
     try {
         const response = await fetch('/api/ai_chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: userText, notes: myNotes, history: chatHistory }),
+            body: JSON.stringify({ 
+                message: userText, 
+                notes: myNotes, 
+                history: chatHistory 
+            }),
             signal: controller.signal
         });
 
@@ -132,20 +154,25 @@ sendBtn.onclick = async () => {
 
         const data = await response.json();
         
-        // Если пока сервер отвечал, мы не нажали "Стоп"
+        // --- КРИТИЧЕСКИЙ МОМЕНТ ---
+        // Останавливаем анимацию и ОЧИЩАЕМ aiMessageElement перед печатью
+        clearInterval(statusInterval);
+        aiMessageElement.innerHTML = ""; 
+
         if (!stopTypewriter) {
             chatHistory.push({ role: "model", content: data.answer });
-            typeWriter(data.answer, aiMessageElement);
+            typeWriter(data.answer.trim(), aiMessageElement);
         }
 
     } catch (error) {
+        clearInterval(statusInterval); // Чистим интервал при ошибке
         if (error.name === 'AbortError') {
             aiMessageElement.innerText = "Генерация остановлена.";
         } else {
             aiMessageElement.innerText = "Ошибка: " + error.message;
         }
-
     } finally {
+        clearInterval(statusInterval); // На всякий случай еще раз
         finalize();
     }
 };

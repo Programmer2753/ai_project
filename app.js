@@ -29,22 +29,25 @@ function smartScroll() {
 }
 
 function appendMessage(role, text) {
-    // Если это самое первое сообщение в сессии
-    if (chatContainer.classList.contains('is-empty')) {
+    const chatContainer = document.querySelector('.chat');
+
+    if (chatContainer && chatContainer.classList.contains('is-empty')) {
         chatContainer.classList.remove('is-empty');
     }
 
     const msgDiv = document.createElement("div");
     msgDiv.className = `msg ${role}`;
+    
     const contentSpan = document.createElement("span");
     contentSpan.className = "text-content";
-    contentSpan.innerText = text;
+    contentSpan.innerHTML = text; 
+    
     msgDiv.appendChild(contentSpan);
     chat.appendChild(msgDiv);
-    
-    // Скроллим только после того, как DOM обновился
+
     setTimeout(() => {
         chat.scrollTop = chat.scrollHeight;
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     }, 10);
     
     return contentSpan;

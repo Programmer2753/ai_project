@@ -110,16 +110,24 @@ body {
 
 /* 2. Поле ввода (Твоя старая основа) */
 .input {
-  width: 100%;
-  background-color: #1e1e1e; 
-  border-radius: 30px;
-  padding: 8px 10px 8px 20px;
-  display: flex;
-  align-items: center;
-  border: none;
+    width: 100%;
+    background-color: #1e1e1e;
+    border-radius: 20px;
+    padding: 8px 15px;
+    display: flex;
+    align-items: center;
+    
+    /* Рамка, которая будет переливаться */
+    border: 2px solid transparent;
+    background-image: linear-gradient(#1e1e1e, #1e1e1e), var(--main-gradient);
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    background-size: 200% auto;
+    animation: sync-flow var(--anim-speed) linear infinite;
+    
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
-/* Обновляем стили для textarea */
 #message {
     flex: 1;
     background: transparent;
@@ -127,60 +135,34 @@ body {
     font-size: 16px;
     outline: none;
     padding: 10px 0;
-    caret-color: #3b82f6;
+    caret-color: #3b82f6; /* Цвет курсора */
     min-height: 24px;
-    max-height: 200px; /* Чтобы не улетело за экран при очень длинном тексте */
+    max-height: 200px;
     line-height: 1.4;
-    color: #ffffff;
-    /* ТВОЙ ЛЮБИМЫЙ RGB ВИЗУАЛ */
-    background-image: var(--main-gradient);
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    background-clip: text;
-    animation: sync-flow var(--anim-speed) linear infinite;
+    color: #ffffff; /* Чистый белый текст - залог отсутствия багов */
+    
+    /* УДАЛИЛИ: background-clip и анимацию градиента отсюда */
+    
     overflow-y: auto;
     resize: none;
 }
 
-/* Стили, чтобы математика и списки внутри сообщений выглядели красиво */
-.text-content h2 { margin: 10px 0; font-size: 1.2em; color: #3b82f6; }
-.text-content ul { margin-left: 20px; }
-.text-content p { margin-bottom: 0.5em; }
-
-.text-content p:last-child {
-  margin-bottom: 0 !important; /* У последнего абзаца отступа быть не должно */
+/* Стилизация скроллбара, чтобы он был "в теме" */
+#message::-webkit-scrollbar {
+    width: 4px; /* Совсем тонкий */
 }
 
-#message::placeholder {
-  -webkit-text-fill-color: #4b5563; /* Цвет плейсхолдера */
-  font-weight: 0;
-}
-
-#message::-webkit-scrollbar,
-.messages-container::-webkit-scrollbar {
-    width: 6px; /* Делаем его тонким и элегантным */
-}
-
-/* 2. Фон дорожки (трека) */
-#message::-webkit-scrollbar-track,
-.messages-container::-webkit-scrollbar-track {
-    background: #1e1e1e; /* Цвет совпадает с фоном инпута */
+#message::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05); /* Почти прозрачный трек */
     border-radius: 10px;
 }
 
-/* 3. Сама "педалька" (ползунок) */
-#message::-webkit-scrollbar-thumb,
-.messages-container::-webkit-scrollbar-thumb {
-    background: #333; /* Темный цвет в покое */
+#message::-webkit-scrollbar-thumb {
+    /* ПРИМЕНЯЕМ ТВОЙ ГРАДИЕНТ НА СКРОЛЛБАР */
+    background: var(--main-gradient);
+    background-size: 200% auto;
+    animation: sync-flow var(--anim-speed) linear infinite;
     border-radius: 10px;
-    border: 1px solid #1e1e1e; /* Небольшой отступ от краев */
-    transition: background 0.3s;
-}
-
-/* 4. Цвет при наведении (можно сделать RGB-синим) */
-#message::-webkit-scrollbar-thumb:hover,
-.messages-container::-webkit-scrollbar-thumb:hover {
-    background: #3b82f6; /* Твой акцентный синий */
 }
 
 /* 4. Кнопка "Отправить" (Смесь старой основы и нового ховера) */

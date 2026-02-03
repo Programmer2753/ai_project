@@ -131,11 +131,10 @@ body {
     min-height: 24px;
     max-height: 200px; /* Чтобы не улетело за экран при очень длинном тексте */
     line-height: 1.4;
-
+    color: #ffffff;
     /* ТВОЙ ЛЮБИМЫЙ RGB ВИЗУАЛ */
     background-image: var(--main-gradient);
     background-size: 200% auto;
-    color: transparent;
     -webkit-background-clip: text;
     background-clip: text;
     animation: sync-flow var(--anim-speed) linear infinite;
@@ -155,6 +154,33 @@ body {
 #message::placeholder {
   -webkit-text-fill-color: #4b5563; /* Цвет плейсхолдера */
   font-weight: 0;
+}
+
+#message::-webkit-scrollbar,
+.messages-container::-webkit-scrollbar {
+    width: 6px; /* Делаем его тонким и элегантным */
+}
+
+/* 2. Фон дорожки (трека) */
+#message::-webkit-scrollbar-track,
+.messages-container::-webkit-scrollbar-track {
+    background: #1e1e1e; /* Цвет совпадает с фоном инпута */
+    border-radius: 10px;
+}
+
+/* 3. Сама "педалька" (ползунок) */
+#message::-webkit-scrollbar-thumb,
+.messages-container::-webkit-scrollbar-thumb {
+    background: #333; /* Темный цвет в покое */
+    border-radius: 10px;
+    border: 1px solid #1e1e1e; /* Небольшой отступ от краев */
+    transition: background 0.3s;
+}
+
+/* 4. Цвет при наведении (можно сделать RGB-синим) */
+#message::-webkit-scrollbar-thumb:hover,
+.messages-container::-webkit-scrollbar-thumb:hover {
+    background: #3b82f6; /* Твой акцентный синий */
 }
 
 /* 4. Кнопка "Отправить" (Смесь старой основы и нового ховера) */

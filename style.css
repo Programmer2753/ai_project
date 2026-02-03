@@ -80,8 +80,8 @@ body {
 
 /* Эффект при наведении на сообщение (опционально, для стиля) */
 .msg:hover {
-  filter: brightness(1.1);
-  transition: filter 0.2s ease;
+  filter: brightness(0.6);
+  transition: filter 0.3s ease;
 }
 
 /* --- СИНХРОННАЯ АНИМАЦИЯ (ДВИЖЕНИЕ ГРАДИЕНТА) --- */
@@ -276,7 +276,6 @@ body {
 #chat::-webkit-scrollbar-thumb { background-color: #333; border-radius: 4px; }
 
 /* --- СТИЛЬ ЛОГО И ЗАГОЛОВКА --- */
-
 #intro {
     display: flex;
     flex-direction: column;

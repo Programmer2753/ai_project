@@ -371,28 +371,34 @@ body {
 /* Тот самый блок анимации */
 .typing-indicator {
     display: flex;
-    gap: 5px;
-    padding: 5px 0;
+    flex-direction: row; /* Выстраиваем в ряд */
+    align-items: center; /* Центрируем точки и текст по вертикали */
+    gap: 10px;
+    width: 100%; /* Занимаем всю ширину сообщения */
+    min-width: 200px; /* Даем минимальный запас места */
 }
 
+/* Текст статуса */
+.thinking-text {
+    white-space: nowrap; /* ЗАПРЕЩАЕМ ПЕРЕНОС ТЕКСТА НА НОВУЮ СТРОКУ */
+    font-size: 14px;
+    color: #888;
+}
+
+.thinking-text {
+    white-space: nowrap; /* ЗАПРЕЩАЕМ ПЕРЕНОС ТЕКСТА НА НОВУЮ СТРОКУ */
+    font-size: 14px;
+    color: #888;
+}
+
+/* Сами точки */
 .typing-indicator span {
+    flex-shrink: 0; /* Запрещаем точкам сжиматься, если места мало */
     width: 8px;
     height: 8px;
-    background: var(--main-gradient);
-    background-size: 200% auto;
-    border-radius: 50%;
-    animation: typing-bounce 1.4s infinite ease-in-out both, 
-               sync-flow var(--anim-speed) linear infinite;
 }
 
 @keyframes typing-bounce {
     0%, 80%, 100% { transform: scale(0); }
     40% { transform: scale(1); }
-}
-
-.thinking-text {
-    margin-left: 10px;
-    font-size: 0.85em;
-    color: #888;
-    opacity: 0.8;
 }

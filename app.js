@@ -38,11 +38,11 @@ function appendMessage(role, text) {
     const msgDiv = document.createElement("div");
     msgDiv.className = `msg ${role}`;
     
-    const contentSpan = document.createElement("span");
-    contentSpan.className = "text-content";
-    contentSpan.innerHTML = text; 
+    const contentDiv = document.createElement("div"); 
+    contentDiv.className = "text-content";
+    contentDiv.innerHTML = text; 
     
-    msgDiv.appendChild(contentSpan);
+    msgDiv.appendChild(contentDiv);
     chat.appendChild(msgDiv);
 
     setTimeout(() => {
@@ -50,7 +50,7 @@ function appendMessage(role, text) {
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     }, 10);
     
-    return contentSpan;
+    return contentDiv;
 }
 
 let typingTimeoutId = null; // Храним ID таймера, чтобы убить его жестко

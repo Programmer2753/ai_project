@@ -1,9 +1,7 @@
-/* --- Базовые настройки и переменные --- */
 :root {
-  /* Тот самый набор цветов: синий, фиолетовый, розовый, оранжевый */
   /* Мы используем linear-gradient с повторением первого цвета в конце для бесшовности */
   --main-gradient: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899, #f97316, #3b82f6);
-  --anim-speed: 4s; /* Единая скорость для синхронизации */
+  --anim-speed: 4s;
 }
 
 * {
@@ -29,7 +27,6 @@ body {
   background: transparent;
 }
 
-/* Исправляем отступы в основном контейнере чата */
 #chat {
   flex: 1;
   overflow-y: auto;
@@ -39,37 +36,35 @@ body {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 20px; /* Увеличиваем расстояние между парами сообщений */
+  gap: 20px;
 }
 
 /* --- Сообщения --- */
-
 .msg {
-  padding: 12px 20px; /* Больше отступов внутри для "воздушности" */
-  border-radius: 25px; /* Сильное скругление, как у инпута */
-  max-width: 80%; /* Чтобы текст не растягивался на весь экран */
+  padding: 12px 20px;
+  border-radius: 25px;
+  max-width: 80%;
   line-height: 1.5;
   font-size: 16px;
   word-wrap: break-word;
   white-space: pre-wrap;
-  color: #ffffff; /* Текст везде белый */
+  color: #ffffff;
   position: relative;
-  margin-bottom: 5px; /* Небольшой отступ между сообщениями в группе */
+  margin-bottom: 5px;
 }
 
-/* Сообщение юзера */
 .user {
-  align-self: flex-end; /* Прижимаем вправо */
-  background-color: #262626; /* Твой цвет: чуть светлее 1e1e1e */
-  border-bottom-right-radius: 8px; /* Небольшой "хвостик", чтобы отличить от АИ */
+  align-self: flex-end;
+  background-color: #262626;
+  border-bottom-right-radius: 8px;
   text-align: left;
 }
 
-/* Сообщение АИ */
+
 .ai {
-  align-self: flex-start; /* Прижимаем влево */
-  background-color: #262626; /* Тот же цвет для единства стиля */
-  border-bottom-left-radius: 8px; /* Хвостик в другую сторону */
+  align-self: flex-start;
+  background-color: #262626;
+  border-bottom-left-radius: 8px;
   text-align: left;
 }
 
@@ -78,21 +73,19 @@ body {
   flex-direction: column;
 }
 
-/* --- СИНХРОННАЯ АНИМАЦИЯ (ДВИЖЕНИЕ ГРАДИЕНТА) --- */
+
 @keyframes sync-flow {
   0% { background-position: 0% 50%; }
   100% { background-position: 200% 50%; }
 }
 
-/* 1. Обертка рамки (Твоя старая основа) */
 .animated-border-wrapper {
   width: 100%;
   max-width: 768px;
   margin: 0 auto 30px auto;
   border-radius: 35px;
-  padding: 5px; /* Толщина рамки */
+  padding: 5px;
   
-  /* Применяем новый синхронный градиент */
   background: var(--main-gradient);
   background-size: 200% auto;
   animation: sync-flow var(--anim-speed) linear infinite;
@@ -102,7 +95,7 @@ body {
   align-items: center;
 }
 
-/* 2. Поле ввода (Твоя старая основа) */
+
 .input {
   width: 100%;
   background-color: #1e1e1e;
@@ -121,7 +114,6 @@ body {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
-/* Обновляем стили для textarea */
 #message {
     flex: 1;
     background: transparent;
@@ -131,55 +123,50 @@ body {
     padding: 10px 0;
     caret-color: #3b82f6;
     min-height: 24px;
-    max-height: 200px; /* Чтобы не улетело за экран при очень длинном тексте */
+    max-height: 200px;
     line-height: 1.4;
     color: #ffffff;
     overflow-y: auto;
     resize: none;
 }
 
-/* Стили, чтобы математика и списки внутри сообщений выглядели красиво */
 .text-content h2 { margin: 10px 0; font-size: 1.2em; color: #3b82f6; }
 .text-content ul { margin-left: 20px; }
 .text-content p { margin-bottom: 0.5em; }
 
 .text-content p:last-child {
-  margin-bottom: 0 !important; /* У последнего абзаца отступа быть не должно */
+  margin-bottom: 0 !important;
 }
 
 #message::placeholder {
-  -webkit-text-fill-color: #4b5563; /* Цвет плейсхолдера */
+  -webkit-text-fill-color: #4b5563;
   font-weight: 0;
 }
 
 #message::-webkit-scrollbar,
 .messages-container::-webkit-scrollbar {
-    width: 6px; /* Делаем его тонким и элегантным */
+    width: 6px;
 }
 
-/* 2. Фон дорожки (трека) */
 #message::-webkit-scrollbar-track,
 .messages-container::-webkit-scrollbar-track {
-    background: #1e1e1e; /* Цвет совпадает с фоном инпута */
+    background: #1e1e1e;
     border-radius: 10px;
 }
 
-/* 3. Сама "педалька" (ползунок) */
 #message::-webkit-scrollbar-thumb,
 .messages-container::-webkit-scrollbar-thumb {
-    background: #333; /* Темный цвет в покое */
+    background: #333;
     border-radius: 10px;
-    border: 1px solid #1e1e1e; /* Небольшой отступ от краев */
+    border: 1px solid #1e1e1e;
     transition: background 0.3s;
 }
 
-/* 4. Цвет при наведении (можно сделать RGB-синим) */
 #message::-webkit-scrollbar-thumb:hover,
 .messages-container::-webkit-scrollbar-thumb:hover {
-    background: #3b82f6; /* Твой акцентный синий */
+    background: #3b82f6;
 }
 
-/* 4. Кнопка "Отправить" (Смесь старой основы и нового ховера) */
 #send {
   background-image: var(--main-gradient);
   background-size: 200% auto;
@@ -194,13 +181,11 @@ body {
   align-items: center;
   cursor: pointer;
   margin-left: 10px;
-  
-  /* Ховер-эффекты из новой версии */
+
   transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
   box-shadow: 0 0 10px rgba(139, 92, 246, 0.4);
 }
 
-/* Эффекты наведения на кнопку */
 #send:hover {
   transform: scale(1.1); 
   filter: brightness(1.2);
@@ -222,15 +207,10 @@ body {
   margin-bottom: 0 !important;
 }
 
-/* Скроллбар */
-#chat::-webkit-scrollbar { width: 8px; }
-#chat::-webkit-scrollbar-track { background: transparent; }
-#chat::-webkit-scrollbar-thumb { background-color: #333; border-radius: 4px; }
-/* 4. Кнопка "Отправить" (Смесь старой основы и нового ховера) */
 #send {
-    background-color: #007bff; /* Синий цвет кнопки (можешь поменять на свой) */
+    background-color: #007bff;
     border: none;
-    border-radius: 50%; /* Круглая кнопка */
+    border-radius: 50%;
     width: 45px;
     height: 45px;
     display: flex;
@@ -250,26 +230,23 @@ body {
     transform: scale(0.95);
 }
 
-/* Цвет иконок внутри */
 #send svg {
     width: 24px;
     height: 24px;
-    stroke: white!important; /* Делаем линии белыми */
+    stroke: white!important;
     fill: none;
 }
 
-/* Специально для квадратика (STOP), если он закрашен */
 #send svg rect {
     fill: white!important; 
     stroke: white!important;
 }
 
-/* Скроллбар */
+
 #chat::-webkit-scrollbar { width: 8px; }
 #chat::-webkit-scrollbar-track { background: transparent; }
 #chat::-webkit-scrollbar-thumb { background-color: #333; border-radius: 4px; }
 
-/* --- СТИЛЬ ЛОГО И ЗАГОЛОВКА --- */
 #intro {
     display: flex;
     flex-direction: column;
@@ -277,9 +254,7 @@ body {
     justify-content: center;
     
     flex: 0 0 auto; 
-    margin-bottom: 40px; /* Отступ до инпута */
-    
-    /* Исходное состояние (на случай если анимация не сработает) */
+    margin-bottom: 40px;
     opacity: 1; 
     transform: translateY(0);
 }
@@ -288,8 +263,7 @@ body {
     display: flex;
     align-items: center;
     gap: 20px;
-    /* Убрали margin-bottom отсюда, так как перенесли его в #intro для чистоты */
-    margin-bottom: 0; 
+    margin-bottom: 0;
 }
 
 .main-logo {
@@ -308,30 +282,21 @@ body {
     color: transparent;
 }
 
-/* --- ЛОГИКА ПЕРЕХОДОВ И ПОЗИЦИИ --- */
-
 .chat.is-empty {
-    /* Центруем группу (Лого + Инпут) строго по центру экрана */
     justify-content: center; 
 }
 
 .chat.is-empty #intro {
-    /* Название анимации | длительность | плавность | задержка (опц) | фиксация в конце */
     animation: fadeInUp 1s cubic-bezier(0.3, 1, 0.5, 1) forwards;
 }
 
-/* Скрываем сообщения, пока чат пуст */
 .chat.is-empty #chat {
     display: none;
 }
 
-/* Инпут в пустом состоянии */
 .chat.is-empty .animated-border-wrapper {
-    /* УБРАЛИ 25vh. Теперь отступ регулируется только через margin-bottom у #intro */
     margin-bottom: 0; 
 }
-
-/* --- КОГДА ЧАТ НАЧАЛСЯ (АНИМАЦИЯ ИСЧЕЗНОВЕНИЯ) --- */
 
 .chat:not(.is-empty) {
     justify-content: flex-end;
@@ -340,18 +305,16 @@ body {
 .chat:not(.is-empty) #intro {
     flex: 0; 
     margin: 0;
-    height: 0; /* Схлопываем высоту */
+    height: 0;
     opacity: 0;
-    transform: translateY(-50px) scale(0.9); /* Логотип улетает вверх */
+    transform: translateY(-50px) scale(0.9);
     pointer-events: none;
 }
 
-/* Возвращаем нормальный отступ инпуту в режиме переписки */
 .chat:not(.is-empty) .animated-border-wrapper {
     margin-bottom: 30px; 
 }
 
-/* Плавная анимация обертки */
 .animated-border-wrapper {
     transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -359,41 +322,38 @@ body {
 @keyframes fadeInUp {
     from {
         opacity: 0;
-        transform: translateY(-30px); /* Начинаем чуть ниже и меньше */
+        transform: translateY(-30px);
     }
     to {
         opacity: 1;
-        transform: translateY(0); /* Встаем на место */
+        transform: translateY(0);
     }
 }
 
 
-/* Тот самый блок анимации */
 .typing-indicator {
     display: flex;
-    flex-direction: row; /* Выстраиваем в ряд */
-    align-items: center; /* Центрируем точки и текст по вертикали */
+    flex-direction: row;
+    align-items: center;
     gap: 10px;
-    width: 100%; /* Занимаем всю ширину сообщения */
-    min-width: 200px; /* Даем минимальный запас места */
+    width: 100%;
+    min-width: 200px;
 }
 
-/* Текст статуса */
 .thinking-text {
-    white-space: nowrap; /* ЗАПРЕЩАЕМ ПЕРЕНОС ТЕКСТА НА НОВУЮ СТРОКУ */
+    white-space: nowrap;
     font-size: 14px;
     color: #888;
 }
 
 .thinking-text {
-    white-space: nowrap; /* ЗАПРЕЩАЕМ ПЕРЕНОС ТЕКСТА НА НОВУЮ СТРОКУ */
+    white-space: nowrap;
     font-size: 14px;
     color: #888;
 }
 
-/* Сами точки */
 .typing-indicator span {
-    flex-shrink: 0; /* Запрещаем точкам сжиматься, если места мало */
+    flex-shrink: 0;
     width: 8px;
     height: 8px;
 }

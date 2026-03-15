@@ -1,5 +1,4 @@
 :root {
-  /* Мы используем linear-gradient с повторением первого цвета в конце для бесшовности */
   --main-gradient: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899, #f97316, #3b82f6);
   --anim-speed: 4s;
 }
@@ -39,7 +38,6 @@ body {
   gap: 20px;
 }
 
-/* --- Сообщения --- */
 .msg {
   padding: 12px 20px;
   border-radius: 25px;
@@ -53,6 +51,12 @@ body {
   margin-bottom: 5px;
 }
 
+.msg.typing-wrapper {
+  padding: 10px 15px;
+  max-width: fit-content;
+  min-width: 0;
+}
+
 .user {
   align-self: flex-end;
   background-color: #262626;
@@ -60,12 +64,22 @@ body {
   text-align: left;
 }
 
+.ai .text-content *:last-child {
+  margin-bottom: 0 !important;
+}
 
 .ai {
   align-self: flex-start;
   background-color: #262626;
   border-bottom-left-radius: 8px;
   text-align: left;
+  display: flex;
+  flex-direction: column;
+}
+
+.text-content p {
+  margin-bottom: 0.5em;
+  display: block;
 }
 
 .ai-msg {
@@ -203,10 +217,6 @@ body {
   fill: none;
 }
 
-.text-content p:last-child {
-  margin-bottom: 0 !important;
-}
-
 #send {
     background-color: #007bff;
     border: none;
@@ -333,17 +343,17 @@ body {
 
 .typing-indicator {
     display: flex;
-    flex-direction: row;
     align-items: center;
     gap: 10px;
-    width: 100%;
-    min-width: 200px;
+    width: auto;
+    min-width: auto;
 }
 
 .thinking-text {
     white-space: nowrap;
     font-size: 14px;
     color: #888;
+    line-height: 1;
 }
 
 .thinking-text {

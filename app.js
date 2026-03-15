@@ -2,35 +2,31 @@ const chat = document.getElementById('chat');
 const input = document.getElementById('message');
 const sendBtn = document.getElementById('send');
 
-let myNotes = []; // Твои заметки
+let myNotes = [];
 let isGenerating = false;
-let controller; // Для отмены запроса
+let controller;
 let stopTypewriter = false;
 
-// Иконки
 const SEND_SVG = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 2L11 13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const STOP_SVG = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="6" width="12" height="12" fill="white" stroke="white" stroke-width="2" stroke-linejoin="round"/></svg>`;
 const chatContainer = document.querySelector('.chat');
 
 let chatHistory = [];
 
-// Исправленный умный скролл
 function smartScroll() {
-    const threshold = 100; // Чувствительность
-    // Если разница между высотой контента и текущим скроллом невелика — скроллим
+    const threshold = 100;
     const distanceToBottom = chat.scrollHeight - chat.scrollTop - chat.clientHeight;
     
     if (distanceToBottom < threshold) {
         chat.scrollTo({
             top: chat.scrollHeight,
-            behavior: 'instant' // Для печати лучше instant, чтобы не дергалось
+            behavior: 'instant'
         });
     }
 }
 
 function appendMessage(role, text) {
     const chatContainer = document.querySelector('.chat');
-
     if (chatContainer && chatContainer.classList.contains('is-empty')) {
         chatContainer.classList.remove('is-empty');
     }
@@ -53,45 +49,39 @@ function appendMessage(role, text) {
     return contentDiv;
 }
 
-let typingTimeoutId = null; // Храним ID таймера, чтобы убить его жестко
+let typingTimeoutId = null;
 
 function typeWriter(text, element, speed = 15) {
     let i = 0;
-    element.innerHTML = ""; // Гарантированная очистка
-    
-    // Если была предыдущая печать — убиваем её насмерть
+    element.innerHTML = "";
+
     if (typingTimeoutId) clearTimeout(typingTimeoutId);
 
     function type() {
-        // Если вдруг мы решили остановить печать извне
         if (stopTypewriter) {
-            element.innerHTML += " [Остановлено]";
+            element.innerHTML += " [Stopped]";
             finalize();
             return;
         }
 
         if (i < text.length) {
-            element.innerHTML += text.charAt(i); // Используем innerHTML для корректной работы
+            element.innerHTML += text.charAt(i);
             i++;
             smartScroll();
-            // Сохраняем ID таймера
             typingTimeoutId = setTimeout(type, speed);
         } else {
-            renderContent(element, text); // Рендерим Markdown в конце
+            renderContent(element, text);
             finalize();
         }
     }
     type();
 }
 
-// ... (функции smartScroll и appendMessage остаются без изменений) ...
-
 function finalize() {
     isGenerating = false;
     stopTypewriter = false;
     sendBtn.innerHTML = SEND_SVG;
-    sendBtn.disabled = false; // На всякий случай включаем кнопку обратно
-    // Убеждаемся, что цвет фона тоже вернулся
+    sendBtn.disabled = false;
     sendBtn.style.backgroundColor = "#007bff"; 
 }
 
@@ -104,13 +94,11 @@ sendBtn.onclick = async () => {
     }
 
     const userText = input.value.trim();
-    if (!userText) return; // Сначала проверяем на пустоту, потом работаем
+    if (!userText) return;
 
-    // 1. Управление историей
     chatHistory.push({ role: "user", content: userText });
     if (chatHistory.length > 10) chatHistory.shift();
 
-    // 2. Визуал кнопки и сброс инпута
     isGenerating = true;
     sendBtn.innerHTML = STOP_SVG;
     sendBtn.style.backgroundColor = "#ff4d4d"; 
@@ -118,19 +106,17 @@ sendBtn.onclick = async () => {
     controller = new AbortController();
     appendMessage("user", userText);
     input.value = "";
-    input.style.height = '45px'; // Сброс к твоей базовой высоте
-    
-    // 3. Создаем контейнер ИИ с анимацией
+    input.style.height = '45px';
+
     const aiMessageElement = appendMessage("ai", `
         <div class="typing-indicator" id="current-loader">
             <span></span><span></span><span></span>
-            <span class="thinking-text" id="thinking-status">SelfNote думает...</span>
+            <span class="thinking-text" id="thinking-status">SelfNote thinking...</span>
         </div>
     `);
 
-    // 4. Логика смены статусов (интервал)
     let statusInterval; 
-    const statuses = ["Анализирую заметки...", "Ищу логические связи...", "Формулирую ответ..."];
+    const statuses = ["Analyzing prompt...", "Looking for logical connections...", "Generating a reply..."];
     let statusIdx = 0;
 
     statusInterval = setInterval(() => {
@@ -153,12 +139,10 @@ sendBtn.onclick = async () => {
             signal: controller.signal
         });
 
-        if (!response.ok) throw new Error("Ошибка сервера");
+        if (!response.ok) throw new Error("Server error");
 
         const data = await response.json();
-        
-        // --- КРИТИЧЕСКИЙ МОМЕНТ ---
-        // Останавливаем анимацию и ОЧИЩАЕМ aiMessageElement перед печатью
+
         clearInterval(statusInterval);
         aiMessageElement.innerHTML = ""; 
 
@@ -168,19 +152,17 @@ sendBtn.onclick = async () => {
         }
 
     } catch (error) {
-        clearInterval(statusInterval); // Чистим интервал при ошибке
+        clearInterval(statusInterval);
         if (error.name === 'AbortError') {
-            aiMessageElement.innerText = "Генерация остановлена.";
+            aiMessageElement.innerText = "Generation stopped.";
         } else {
-            aiMessageElement.innerText = "Ошибка: " + error.message;
+            aiMessageElement.innerText = "Error: " + error.message;
         }
     } finally {
-        clearInterval(statusInterval); // На всякий случай еще раз
+        clearInterval(statusInterval);
         finalize();
     }
 };
-
-// --- СЛУШАТЕЛИ СОБЫТИЙ ---
 
 input.addEventListener('input', function() {
     this.style.height = 'auto';

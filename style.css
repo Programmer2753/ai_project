@@ -351,8 +351,7 @@ body {
     align-items: center;
     gap: 10px;
     width: max-content;
-    min-width: 220px;
-    padding: 4px 0;
+    min-width: 300px;
     white-space: nowrap;
 }
 

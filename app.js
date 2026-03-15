@@ -108,12 +108,7 @@ sendBtn.onclick = async () => {
     input.value = "";
     input.style.height = '45px';
 
-    const aiMessageElement = appendMessage("ai", `
-        <div class="typing-indicator" id="current-loader">
-            <span></span><span></span><span></span>
-            <span class="thinking-text" id="thinking-status">SelfNote thinking...</span>
-        </div>
-    `);
+    const aiMessageElement = appendMessage("ai", '<div class="typing-indicator" id="current-loader"><span></span><span></span><span></span><span class="thinking-text" id="thinking-status">SelfNote thinking...</span></div>');
 
     let statusInterval; 
     const statuses = ["Analyzing prompt...", "Looking for logical connections...", "Generating a reply..."];

@@ -77,9 +77,18 @@ body {
   flex-direction: column;
 }
 
+.text-content {
+    white-space: normal; 
+}
+
 .text-content p {
   margin-bottom: 0.5em;
   display: block;
+  white-space: pre-wrap;
+}
+
+.text-content p:last-child {
+    margin-bottom: 0 !important;
 }
 
 .ai-msg {
@@ -146,11 +155,6 @@ body {
 
 .text-content h2 { margin: 10px 0; font-size: 1.2em; color: #3b82f6; }
 .text-content ul { margin-left: 20px; }
-.text-content p { margin-bottom: 0.5em; }
-
-.text-content p:last-child {
-  margin-bottom: 0 !important;
-}
 
 #message::placeholder {
   -webkit-text-fill-color: #4b5563;
@@ -343,17 +347,18 @@ body {
 
 .typing-indicator {
     display: flex;
+    flex-direction: row;
     align-items: center;
     gap: 10px;
-    width: auto;
-    min-width: auto;
+    width: 100%;
+    padding: 4px 0;
+    white-space: nowrap;
 }
 
 .thinking-text {
     white-space: nowrap;
     font-size: 14px;
     color: #888;
-    line-height: 1;
 }
 
 .thinking-text {
@@ -371,4 +376,9 @@ body {
 @keyframes typing-bounce {
     0%, 80%, 100% { transform: scale(0); }
     40% { transform: scale(1); }
+}
+
+.ai:has(.typing-indicator) {
+    padding-top: 8px;
+    padding-bottom: 8px;
 }

@@ -382,3 +382,27 @@ body {
     max-width: 80%;
     width: fit-content;
 }
+
+.disclaimer {
+    display: none;
+    text-align: center;
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 15px;
+    margin-top: -20px;
+    transition: opacity 0.6s ease;
+}
+
+@media (min-width: 768px) {
+    .disclaimer {
+        display: block;
+    }
+}
+
+.chat.is-empty .disclaimer {
+    margin-top: 25px; 
+}
+
+.chat:not(.is-empty) .animated-border-wrapper {
+    margin-bottom: 25px !important; 
+}

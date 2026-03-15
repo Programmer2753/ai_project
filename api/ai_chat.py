@@ -3,11 +3,10 @@ from pydantic import BaseModel
 import google.generativeai as genai
 import os
 
-# Инициализация
+# INITIALIZATION
 api_key = os.getenv("GEMINI_API_KEY")
 genai.configure(api_key=api_key)
 
-# Выбираем стабильную и умную модель из твоего списка
 MODEL_NAME = 'models/gemma-3-27b-it'
 
 app = FastAPI()
@@ -22,8 +21,6 @@ class AIRequest(BaseModel):
 @app.post("/api/ai_chat")
 async def ai_chat(req: AIRequest):
     try:
-        # Настраиваем "мозги" модели через системную инструкцию
-        # Контекст из заметок
         system_rules = (
             "CORE IDENTITY: You are a highly intelligent, adaptive AI assistant and a large language model developed by the SelfNote team. "
             "Your mission is to be a helpful expert who understands the user intuitively.\n\n"
@@ -43,28 +40,26 @@ async def ai_chat(req: AIRequest):
 
         history_text = ""
         if req.history:
-            history_text = "ИСТОРИЯ ТЕКУЩЕГО ДИАЛОГА (для контекста):\n"
+            history_text = "BACKGROUND TO THE CURRENT DISCUSSION (for context):\n"
             for msg in req.history[:-1]:
-                prefix = "Пользователь" if msg['role'] == "user" else "SelfNote"
+                prefix = "User" if msg['role'] == "user" else "SelfNote"
                 history_text += f"[{prefix}]: {msg['content']}\n"
 
-        # В user_prompt добавим еще один акцент для модели
-        context = "ЗАМЕТКИ ПОЛЬЗОВАТЕЛЯ:\n" + "\n".join(req.notes)
+        context = "USER NOTES:\n" + "\n".join(req.notes)
         user_prompt = (
-            f"### ИНСТРУКЦИЯ СИСТЕМЫ:\n{system_rules}\n\n"
-            f"### КОНТЕКСТ (ЗАМЕТКИ):\n{context}\n\n"
-            f"{history_text}\n" # История теперь четко отделена
-            f"### НОВОЕ СООБЩЕНИЕ ОТ ПОЛЬЗОВАТЕЛЯ:\n{req.message}\n\n"
-            f"ТВОЙ ОТВЕТ (без лишних приветствий):"
+            f"### SYSTEM MANUAL:\n{system_rules}\n\n"
+            f"### CONTEXT (NOTES):\n{context}\n\n"
+            f"{history_text}\n"
+            f"### NEW MESSAGE FROM A USER:\n{req.message}\n\n"
+            f"YOUR REPLY (without any unnecessary greetings):"
         )
 
         response = model.generate_content(user_prompt)
         
         if not response.text:
-            return {"answer": "ИИ задумался и не выдал текст. Попробуй переформулировать."}
+            return {"answer": "The AI paused and didn't generate any text. Try rephrasing your prompt."}
             
         return {"answer": response.text}
         
     except Exception as e:
-        # Если вдруг опять 429 или 404, мы это увидим
-        return {"answer": f"Произошла ошибка: {str(e)}"}
+        return {"answer": f"An error has occurred: {str(e)}"}

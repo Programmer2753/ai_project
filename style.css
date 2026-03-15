@@ -350,7 +350,8 @@ body {
     flex-direction: row;
     align-items: center;
     gap: 10px;
-    width: 100%;
+    width: max-content;
+    min-width: 220px;
     padding: 4px 0;
     white-space: nowrap;
 }
@@ -379,6 +380,6 @@ body {
 }
 
 .ai:has(.typing-indicator) {
-    padding-top: 8px;
-    padding-bottom: 8px;
+    max-width: 80%;
+    width: fit-content;
 }

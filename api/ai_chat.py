@@ -3,11 +3,10 @@ from pydantic import BaseModel
 import google.generativeai as genai
 import os
 
-# INITIALIZATION
 api_key = os.getenv("GEMINI_API_KEY")
 genai.configure(api_key=api_key)
 
-MODEL_NAME = 'models/gemma-3-27b-it'
+MODEL_NAME = 'models/gemini-2.5-flash'
 
 app = FastAPI()
 
@@ -15,13 +14,12 @@ model = genai.GenerativeModel(model_name=MODEL_NAME)
 
 class AIRequest(BaseModel):
     message: str
-    notes: list[str]
     history: list[dict]
 
 @app.post("/api/ai_chat")
 async def ai_chat(req: AIRequest):
     try:
-        system_rules = (
+        SYSTEM_RULES = (
             "CORE IDENTITY: You are a highly intelligent, adaptive AI assistant and a large language model developed by the SelfNote team. "
             "Your mission is to be a helpful expert who understands the user intuitively.\n\n"
 
@@ -33,8 +31,7 @@ async def ai_chat(req: AIRequest):
             "Avoid being overly formal, but never use slang or become inappropriately casual (no 'bro' talk).\n"
             "4. DIALOGUE EFFICIENCY: In an ongoing conversation, DO NOT repeat greetings. "
             "Never say 'Hello,' 'Hi,' or 'Greetings' if the dialogue has already started. Be direct and get straight to the answer.\n"
-            "5. LOGIC & CONTEXT: Use the user's notes as the primary foundation for your answers. "
-            "For complex tasks or problem-solving, apply Chain-of-Thought reasoning: think step-by-step to ensure accuracy.\n"
+            "5. LOGIC & CONTEXT: For complex tasks or problem-solving, apply Chain-of-Thought reasoning: think step-by-step to ensure accuracy.\n"
             "6. INTUITIVE UNDERSTANDING: Be highly tolerant of typos, grammatical errors, or reversed words. Focus on the user's intent rather than literal syntax."
         )
 
@@ -45,10 +42,8 @@ async def ai_chat(req: AIRequest):
                 prefix = "User" if msg['role'] == "user" else "SelfNote"
                 history_text += f"[{prefix}]: {msg['content']}\n"
 
-        context = "USER NOTES:\n" + "\n".join(req.notes)
         user_prompt = (
-            f"### SYSTEM MANUAL:\n{system_rules}\n\n"
-            f"### CONTEXT (NOTES):\n{context}\n\n"
+            f"### SYSTEM MANUAL:\n{SYSTEM_RULES}\n\n"
             f"{history_text}\n"
             f"### NEW MESSAGE FROM A USER:\n{req.message}\n\n"
             f"YOUR REPLY (without any unnecessary greetings):"

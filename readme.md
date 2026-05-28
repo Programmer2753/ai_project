@@ -1,12 +1,12 @@
-# 🤖 SelfNote AI (Demo version)
+# 🤖 Cadoff AI (Demo version)
 
-> **SelfNote AI** — is a demo version of an intelligent assistant designed to make your day-to-day interaction with information easier, faster and more engaging.
+> **Cadoff AI** — is a demo version of an intelligent assistant designed to make your day-to-day interaction with information easier, faster and more engaging.
 
 ---
 
 ## ✨ Key features
 
-At present, SelfNote AI can:
+At present, Cadoff AI can:
 
 * 🧠 **Problem-solving**: Help with analysing logical problems and finding answers.
 * 💬 **Smart conversation partner**: Can hold a conversation on any topic — from discussing plans to philosophical musings.
@@ -43,5 +43,5 @@ As this is a demo version, your feedback is really important to me! If you have 
 
 ## 🔗 Links
 
-* 🌐 [Try Demo](https://selfnoteai-demo.vercel.app) — link to the latest version
-* 💬 [Telegram Channel](https://t.me/selfnoteai) — ask a question or suggest a feature
+* 🌐 [Try Demo](https://cadoffai.vercel.app) — link to the latest version
+* 💬 [Telegram Channel](https://t.me/cadoffcorporation) — ask a question or suggest a feature

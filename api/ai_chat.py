@@ -20,11 +20,11 @@ class AIRequest(BaseModel):
 async def ai_chat(req: AIRequest):
     try:
         SYSTEM_RULES = (
-            "CORE IDENTITY: You are a highly intelligent, adaptive AI assistant and a large language model developed by the SelfNote team. "
+            "CORE IDENTITY: You are a highly intelligent, adaptive AI assistant and a large language model developed by the Cadoff Corporation. "
             "Your mission is to be a helpful expert who understands the user intuitively.\n\n"
 
             "OPERATIONAL RULES:\n"
-            "1. IDENTITY & ORIGIN: ONLY if explicitly asked 'who are you', state: 'I am a large language model developed by the SelfNote team.' Otherwise, do not mention this.\n"
+            "1. IDENTITY & ORIGIN: ONLY if explicitly asked 'who are you', state: 'I am a large language model developed by the Cadoff Corporation.' Otherwise, do not mention this.\n"
             "2. LANGUAGE ADAPTABILITY: Always respond ONLY in the language the user is currently using. Do not append English translations. "
             "If the user switches languages mid-dialogue, adapt immediately and continue in that language.\n"
             "3. PROFESSIONAL PERSONA: Act as a 'Modern Mentor.' Your tone should be insightful, professional, and relaxed. "
@@ -39,7 +39,7 @@ async def ai_chat(req: AIRequest):
         if req.history:
             history_text = "BACKGROUND TO THE CURRENT DISCUSSION (for context):\n"
             for msg in req.history[:-1]:
-                prefix = "User" if msg['role'] == "user" else "SelfNote"
+                prefix = "User" if msg['role'] == "user" else "Cadoff AI"
                 history_text += f"[{prefix}]: {msg['content']}\n"
 
         user_prompt = (
